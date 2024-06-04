@@ -1,14 +1,9 @@
-import io
 import smtplib
 import warnings
 
-from os.path import join
-from PIL import Image
 from email.message import EmailMessage
-from colorama import init
 
 warnings.filterwarnings('ignore')
-init()
 
 
 class Email:
@@ -66,19 +61,6 @@ class Email:
                 'sub_type': type_file
             }
         )
-
-    def add_image(self,
-                  image_path: str,
-                  image_filename: str,
-                  image_cid: str) -> None:
-
-        with open(join(image_path, image_filename), 'rb') as image:
-            img_file = image.read()
-            img = Image.open(io.BytesIO(img_file))
-            image_type = img.format.lower()
-
-        self.__email__.add_related(
-            img_file, 'image', image_type, cid=image_cid)
 
     def send_email(self, confirm_send_message=True):
         self.__get_attachments__()
