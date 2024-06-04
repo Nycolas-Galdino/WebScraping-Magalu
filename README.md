@@ -46,7 +46,7 @@ projeto-raiz/
 1. Clone o repositório para sua máquina local.
 2. Instale as dependências necessárias usando pip:
    ```bash
-   pip install selenium pandas beautifulsoup4 webdriver_manager
+   pip install selenium pandas beautifulsoup4 webdriver_manager openpyxl
    ```
 3. Baixe o WebDriver correspondente ao seu navegador e adicione o caminho do WebDriver ao PATH do sistema, ou especifique o caminho diretamente no código.
 
