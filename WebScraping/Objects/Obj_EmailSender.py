@@ -113,13 +113,6 @@ class Email:
             except smtplib.SMTPAuthenticationError:
                 print("\033[1;31mO e-mail/senha estão incorretos. \033[0m")
 
-    def __str__(self) -> str:
-        atributos = []
-        for atributo, valor in sorted(self.__dict__.items()):
-            if '__' not in atributo:
-                atributos.append(f'\033[1;33m{atributo}\033[0m = {valor}')
-        return '\n'.join(atributos)
-
     def __get_attachments__(self) -> None:
         for attach in self.__attachments__:
             with open(attach["path"], 'rb') as attachment:
