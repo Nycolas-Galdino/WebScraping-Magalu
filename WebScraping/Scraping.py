@@ -3,7 +3,7 @@ import pandas as pd
 from time import sleep
 from bs4 import BeautifulSoup
 
-from Config import from_email, password, email
+from Config import password, user_email
 
 from Objects.Obj_EmailSender import Email
 from Objects.Obj_WebAutomation import Driver, WebDriver
@@ -30,16 +30,14 @@ def search_product(driver: Driver, webdriver: WebDriver, product: str) -> None:
                            wait=10)
 
 
-
-def extrair_dados(driver: Driver, webdriver: WebDriver, max_pages = None) -> list:
-
+def extrair_dados(driver: Driver, webdriver: WebDriver, max_pages: int = None) -> list:
     produtos = []
-    
+
     if not max_pages:
         max_pages = 100
 
     pag_atual = 1
-    while pag_atual < max_pages:
+    while pag_atual <= max_pages:
         html = webdriver.page_source
         soup = BeautifulSoup(html, 'html.parser')
 
@@ -51,11 +49,10 @@ def extrair_dados(driver: Driver, webdriver: WebDriver, max_pages = None) -> lis
 
             url = f'https://www.magazineluiza.com.br{url}'
 
-            aval = product.find('span', {'data-testid': 'review'})
-            qtd_aval = (0 if not aval
-                        else aval.text.split()[1].removeprefix('(').removesuffix(')'))
-
-            produtos.append([nome, qtd_aval, url])
+            aval = product.find('span', {'format': 'score-count'})
+            if aval:
+                qtd_aval = aval.text.split()[1].removeprefix('(').removesuffix(')')
+                produtos.append([nome, qtd_aval, url])
 
         print(f"Pagina {pag_atual} concluída")
         try:
@@ -92,7 +89,7 @@ def salvar_excel(df: pd.DataFrame) -> None:
 def enviar_email(to_email: list, subject: list, body: str) -> None:
     email = Email(subject)
 
-    email.sender = from_email
+    email.sender = user_email
     email.destination = to_email
     email.body = body.replace('\n', '<br>')
 
@@ -106,13 +103,10 @@ def enviar_email(to_email: list, subject: list, body: str) -> None:
 
 def main() -> None:
     url = 'https://www.magazineluiza.com.br'
-    to_list = [email]
-    email_body = """
-        Olá, aqui está o seu relatório dos notebooks
-        extraídos da Magazine Luiza.
+    to_list = [user_email]
+    email_body = """Olá, aqui está o seu relatório dos notebooks extraídos da Magazine Luiza.
 
         Atenciosamente,
-
         Robô.
     """
 
@@ -122,16 +116,19 @@ def main() -> None:
     # Verifica se o site está carregado corretamente
     if not verify_website(webdriver, url):
         webdriver.quit()
-        with open('Output/erro_carregamento.log', 'w') as log_file:
+        with open('ErrorLog.log', 'w') as log_file:
             log_file.write('Site fora do ar')
 
     # Faz a pesquisa de todos os produtos
     search_product(driver, webdriver, 'notebooks')
 
     produtos = extrair_dados(driver, webdriver)
+
+    webdriver.quit()
+
     df = criar_dataframe(produtos)
     salvar_excel(df)
-    enviar_email(to_list, 'Relatório de Notebooks', email_body)
+    enviar_email(to_list, 'Relatório Notebooks', email_body)
 
 
 if __name__ == '__main__':

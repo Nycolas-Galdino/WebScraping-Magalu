@@ -26,16 +26,9 @@ class Email:
         self.sender: str = 'insira seu e-mail'
         self.__password__: str = 'insira sua senha'
 
-        self.bcc.append(self.sender)
         self.__attachments__: list = []
 
     def create_email(self) -> EmailMessage:
-        if self.sender in self.destination:
-            self.destination.remove(self.sender)
-
-        if self.sender in self.cc:
-            self.cc.remove(self.sender)
-
         # Criação da mensagem multipart
         result = EmailMessage()
         result['From'] = self.sender
