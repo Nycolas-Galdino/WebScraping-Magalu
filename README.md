@@ -53,7 +53,7 @@ projeto-raiz/
 ## Como Executar
 1. Configure o arquivo `Config.py` com suas informações de e-mail:
    ```python
-   from_email = 'seu-email@gmail.com'
+   user_email = 'seu-nome'
    password = 'sua-senha'
    email = 'seu-email@gmail.com'
    ```
@@ -138,7 +138,7 @@ def salvar_excel(df: pd.DataFrame) -> None:
 ```python
 def enviar_email(to_email: list, subject: list, body: str) -> None:
     email = Email(subject)
-    email.sender = from_email
+    email.sender = user_email
     email.destination = to_email
     email.body = body.replace('\n', '<br>')
     email.smtp_host = 'smtp.gmail.com'
@@ -153,7 +153,7 @@ def enviar_email(to_email: list, subject: list, body: str) -> None:
 ```python
 def main() -> None:
     url = 'https://www.magazineluiza.com.br'
-    to_list = [email]
+    to_list = [user_email]
     email_body = """
         Olá, aqui está o seu relatório dos notebooks
         extraídos da Magazine Luiza.
@@ -186,7 +186,3 @@ Este projeto está licenciado sob a licença MIT. Consulte o arquivo LICENSE par
 
 ### Contato
 Para dúvidas e sugestões, entre em contato pelo e-mail [nycolaspimentel12@gmail.com](mailto:nycolaspimentel12@gmail.com)
-
----
-
-Certifique-se de ajustar detalhes como e-mails, URLs e outras informações específicas antes de utilizar este README em um projeto real.
