@@ -3,7 +3,7 @@ import pandas as pd
 from time import sleep
 from bs4 import BeautifulSoup
 
-from Config import password, user_email
+from Config import user_email, password
 
 from Objects.Obj_EmailSender import Email
 from Objects.Obj_WebAutomation import Driver, WebDriver
@@ -115,9 +115,13 @@ def main() -> None:
 
     # Verifica se o site está carregado corretamente
     if not verify_website(webdriver, url):
+        print('Site fora do ar, parando o processo...')
+
         webdriver.quit()
         with open('ErrorLog.log', 'w') as log_file:
             log_file.write('Site fora do ar')
+        
+        quit()
 
     # Faz a pesquisa de todos os produtos
     search_product(driver, webdriver, 'notebooks')
